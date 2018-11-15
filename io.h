@@ -10,14 +10,20 @@ Adafruit_MQTT_Client mqtt(&client, IO_SERVER, IO_PORT, IO_USER, IO_KEY);
 
 Adafruit_MQTT_Publish indoor_temp = Adafruit_MQTT_Publish(&mqtt, iouser + "oskrpnk/feeds/indoor-temp");
 Adafruit_MQTT_Publish indoor_humi = Adafruit_MQTT_Publish(&mqtt, iouser + "oskrpnk/feeds/indoor-humi");
-void io_connect() {
 
-  Serial.print("Connecting to Adafruit IO... ");
+bool io_connect() {
+
+  Serial.println("\nConnecting to Adafruit IO ");
 
   int8_t ret;
+  int timeout = 10;
 
-  while ((ret = mqtt.connect()) != 0) {
-
+  while ((ret = mqtt.connect()) != 0 && timeout >= 0) {
+    
+    timeout = timeout - 1;
+    delay(1000);    
+    Serial.print("."); 
+    
     switch (ret) {
       case 1: Serial.println("Wrong protocol"); break;
       case 2: Serial.println("ID rejected"); break;
@@ -28,13 +34,15 @@ void io_connect() {
       default: Serial.println("Connection failed"); break;
     }
 
-    if(ret >= 0)
+    if(ret >= 0){
       mqtt.disconnect();
-
-    Serial.println("Retrying connection...");
-    delay(5000);
-
+      return false;
+    }
   }
+  
+  Serial.println();
 
   Serial.println("Adafruit IO Connected!");
+
+  return true;
 }

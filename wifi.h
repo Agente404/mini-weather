@@ -1,7 +1,7 @@
 #include <ESP8266WiFi.h>
 
-#define SSID "NEWTONFORMACION" //(const char*)ssid
-#define PWD "NEWTONFORMACI" //(const char*)wpwd
+#define SSID "Tech" //(const char*)ssid
+#define PWD "TXZUPXJJ" //(const char*)wpwd
 
 WiFiServer server(80);
 WiFiClient client;
@@ -24,6 +24,8 @@ bool client_mode(){
   WiFi.disconnect();
   WiFi.begin(SSID, PWD);
   
+  Serial.println("\nWaiting for wifi");
+
   while (WiFi.status() != WL_CONNECTED && timeout >= 0)
   {
     timeout = timeout - 1;
